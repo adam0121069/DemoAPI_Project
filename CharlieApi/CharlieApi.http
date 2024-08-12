@@ -1,0 +1,6 @@
+@CharlieApi_HostAddress = http://localhost:5207
+
+GET {{CharlieApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
