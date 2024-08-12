@@ -170,3 +170,11 @@
 /Users/xuyuwei/Desktop/CSharpProject/DemoAPI_Project/CharlieApi/obj/Debug/net8.0/CharlieApi.pdb
 /Users/xuyuwei/Desktop/CSharpProject/DemoAPI_Project/CharlieApi/obj/Debug/net8.0/CharlieApi.genruntimeconfig.cache
 /Users/xuyuwei/Desktop/CSharpProject/DemoAPI_Project/CharlieApi/obj/Debug/net8.0/ref/CharlieApi.dll
+/Users/xuyuwei/Desktop/CSharpProject/DemoAPI_Project/CharlieApi/bin/Debug/net8.0/Dapper.dll
+/Users/xuyuwei/Desktop/CSharpProject/DemoAPI_Project/CharlieApi/bin/Debug/net8.0/System.Data.SqlClient.dll
+/Users/xuyuwei/Desktop/CSharpProject/DemoAPI_Project/CharlieApi/bin/Debug/net8.0/runtimes/win-arm64/native/sni.dll
+/Users/xuyuwei/Desktop/CSharpProject/DemoAPI_Project/CharlieApi/bin/Debug/net8.0/runtimes/win-x64/native/sni.dll
+/Users/xuyuwei/Desktop/CSharpProject/DemoAPI_Project/CharlieApi/bin/Debug/net8.0/runtimes/win-x86/native/sni.dll
+/Users/xuyuwei/Desktop/CSharpProject/DemoAPI_Project/CharlieApi/bin/Debug/net8.0/runtimes/unix/lib/netcoreapp2.1/System.Data.SqlClient.dll
+/Users/xuyuwei/Desktop/CSharpProject/DemoAPI_Project/CharlieApi/bin/Debug/net8.0/runtimes/win/lib/netcoreapp2.1/System.Data.SqlClient.dll
+/Users/xuyuwei/Desktop/CSharpProject/DemoAPI_Project/CharlieApi/obj/Debug/net8.0/CharlieApi.sourcelink.json

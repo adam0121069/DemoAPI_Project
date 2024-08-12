@@ -3,14 +3,14 @@ using CharlieApi.Models.EFModels;
 using CharlieApi.EFService;
 
 namespace CharlieApi.Controllers;
+
 [ApiController]
-[Route("[controller]")]
-
-public class UsersController : ControllerBase
+[Route("api/[controller]")]
+public class EFUsersController : ControllerBase
 {
-    private readonly UserService _userService;
+    private readonly EFUserService _userService;
 
-    public UsersController(UserService userService)
+    public EFUsersController(EFUserService userService)
     {
         _userService = userService;
     }
@@ -37,15 +37,20 @@ public class UsersController : ControllerBase
 
     // POST: api/Users
     [HttpPost]
-    public async Task<ActionResult<User>> PostUser(User user)
+    public async Task<ActionResult<User>> PostUser([FromBody] User user)
     {
-        var createdUser = await _userService.AddUserAsync(user);
-        return CreatedAtAction(nameof(GetUser), new { id = createdUser.SeqNo }, createdUser);
+        if (user == null)
+        {
+            return BadRequest();
+        }
+
+        await _userService.CreateUserAsync(user);
+        return CreatedAtAction(nameof(GetUser), new { id = user.SeqNo }, user);
     }
 
     // PUT: api/Users/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutUser(int id, User user)
+    public async Task<IActionResult> PutUser(int id, [FromBody] User user)
     {
         if (id != user.SeqNo)
         {
@@ -74,4 +79,3 @@ public class UsersController : ControllerBase
         return NoContent();
     }
 }
-
