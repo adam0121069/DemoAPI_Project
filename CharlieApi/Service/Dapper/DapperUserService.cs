@@ -92,7 +92,7 @@ namespace CharlieApi.DapperService
                     user.FirstName,
                     user.LastName,
                     user.Email,
-                    // Convert DateOnly to DateTime
+                    //Convert DateOnly to DateTime for Dapper
                     DateOfBirth = user.DateOfBirth.ToDateTime(TimeOnly.MinValue)
                 });
 
