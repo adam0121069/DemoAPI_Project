@@ -4,36 +4,36 @@ using Dapper;
 
 namespace CharlieApi.DapperService
 {
-    public class DapperUser
+    public class DapperUserService
     {
         private readonly string _connectionString;
 
-        public DapperUser(string connectionString)
+        public DapperUserService(string connectionString)
         {
             _connectionString = connectionString;
         }
 
-        public async Task<IEnumerable<Models.DapperModels.DapperUser>> GetUsersAsync()
+        public async Task<IEnumerable<DapperUser>> GetUsersAsync()
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                IEnumerable<Models.DapperModels.DapperUser> users = await connection.QueryAsync<Models.DapperModels.DapperUser>("SELECT * FROM Users");
-                return users ?? Enumerable.Empty<Models.DapperModels.DapperUser>();
+                IEnumerable<DapperUser> users = await connection.QueryAsync<DapperUser>("SELECT * FROM Users");
+                return users ?? Enumerable.Empty<DapperUser>();
             }
         }
 
-        public async Task<Models.DapperModels.DapperUser> GetUserByIdAsync(int id)
+        public async Task<DapperUser> GetUserByIdAsync(int id)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                Models.DapperModels.DapperUser? user = await connection.QueryFirstOrDefaultAsync<Models.DapperModels.DapperUser>("SELECT * FROM Users WHERE SeqNo = @Id", new { Id = id });
-                return user ?? new Models.DapperModels.DapperUser();
+                DapperUser? user = await connection.QueryFirstOrDefaultAsync<DapperUser>("SELECT * FROM Users WHERE SeqNo = @Id", new { Id = id });
+                return user ?? new DapperUser();
             }
         }
 
-        public async Task<int> UpdateUserAsync(Models.DapperModels.DapperUser user)
+        public async Task<int> UpdateUserAsync(DapperUser user)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -72,6 +72,31 @@ namespace CharlieApi.DapperService
                 var result = await connection.ExecuteAsync(sql, new { Id = id });
 
                 return result; // 返回受影响的行数
+            }
+        }
+
+        public async Task<int> CreateUserAsync(DapperUser user)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                string sql = @"
+                    INSERT INTO Users (AccountNumber, PassWordStr, FirstName, LastName, Email ,DateOfBirth)
+                    VALUES (@AccountNumber, @PassWordStr, @FirstName, @LastName, @Email, @DateOfBirth);
+                    SELECT CAST(SCOPE_IDENTITY() as int);";
+
+                var result = await connection.QuerySingleAsync<int>(sql, new
+                {
+                    user.AccountNumber,
+                    user.PassWordStr,
+                    user.FirstName,
+                    user.LastName,
+                    user.Email,
+                    // Convert DateOnly to DateTime
+                    DateOfBirth = user.DateOfBirth.ToDateTime(TimeOnly.MinValue)
+                });
+
+                return result;
             }
         }
     }

@@ -3,6 +3,8 @@ using CharlieApi.EFService;
 using Microsoft.EntityFrameworkCore;
 using CharlieApi.DapperService;
 
+const string Connstring = "DefaultConnection";
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -12,21 +14,21 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+string? connectionString = builder.Configuration.GetConnectionString(Connstring);
 
 if (string.IsNullOrEmpty(connectionString))
 {
     throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 }
 
-// 注册 DbContext
+// Mssql2022dbContext
 builder.Services.AddDbContext<Mssql2022dbContext>(options =>
     options.UseSqlServer(connectionString));
 
-// 注册 UserRepository
-builder.Services.AddScoped<DapperUser>(provider =>
+//DapperUserService
+builder.Services.AddScoped<DapperUserService>(provider =>
 {
-    return new DapperUser(connectionString);
+    return new DapperUserService(connectionString);
 });
 
 // Add UserService to the container

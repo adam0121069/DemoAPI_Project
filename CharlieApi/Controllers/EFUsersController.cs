@@ -23,21 +23,17 @@ public class EFUsersController : ControllerBase
         return Ok(users);
     }
 
-    // GET: api/Users/5
+    // GET: api/Users/{id}
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetUser(int id)
     {
         var user = await _userService.GetUserByIdAsync(id);
-        if (user == null)
-        {
-            return NotFound();
-        }
-        return Ok(user);
+        return user == null ? NotFound() : Ok(user);
     }
 
     // POST: api/Users
     [HttpPost]
-    public async Task<ActionResult<User>> PostUser([FromBody] User user)
+    public async Task<ActionResult<User>> PostUser(User user)
     {
         if (user == null)
         {
@@ -48,9 +44,9 @@ public class EFUsersController : ControllerBase
         return CreatedAtAction(nameof(GetUser), new { id = user.SeqNo }, user);
     }
 
-    // PUT: api/Users/5
+    // PUT: api/Users/{id}
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutUser(int id, [FromBody] User user)
+    public async Task<IActionResult> PutUser(int id, User user)
     {
         if (id != user.SeqNo)
         {
@@ -66,7 +62,7 @@ public class EFUsersController : ControllerBase
         return NoContent();
     }
 
-    // DELETE: api/Users/5
+    // DELETE: api/Users/{id}
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
