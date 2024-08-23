@@ -2,6 +2,7 @@ using CharlieApi.Models.EFModels;
 using CharlieApi.EFService;
 using Microsoft.EntityFrameworkCore;
 using CharlieApi.DapperService;
+using CharlieApi.Service;
 
 const string Connstring = "DefaultConnection";
 
@@ -31,12 +32,26 @@ builder.Services.AddScoped<DapperUserService>(provider =>
     return new DapperUserService(connectionString);
 });
 
+// 添加 HttpClient 和 QuestionAnswerService
+builder.Services.AddHttpClient<QuestionAnswerService>();
+
 // Add UserService to the container
 builder.Services.AddScoped<EFUserService>();
 
 // Add services to the container
 builder.Services.AddControllers();
 
+// cors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -58,6 +73,8 @@ if (app.Environment.IsDevelopment())
         }
     });
 }
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
