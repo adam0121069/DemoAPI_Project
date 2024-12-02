@@ -178,3 +178,6 @@
 /Users/xuyuwei/Desktop/CSharpProject/DemoAPI_Project/CharlieApi/bin/Debug/net8.0/runtimes/unix/lib/netcoreapp2.1/System.Data.SqlClient.dll
 /Users/xuyuwei/Desktop/CSharpProject/DemoAPI_Project/CharlieApi/bin/Debug/net8.0/runtimes/win/lib/netcoreapp2.1/System.Data.SqlClient.dll
 /Users/xuyuwei/Desktop/CSharpProject/DemoAPI_Project/CharlieApi/obj/Debug/net8.0/CharlieApi.sourcelink.json
+/Users/xuyuwei/Desktop/CSharpProject/DemoAPI_Project/CharlieApi/bin/Debug/net8.0/Newtonsoft.Json.dll
+/Users/xuyuwei/Desktop/CSharpProject/DemoAPI_Project/CharlieApi/bin/Debug/net8.0/Microsoft.Extensions.AI.Abstractions.dll
+/Users/xuyuwei/Desktop/CSharpProject/DemoAPI_Project/CharlieApi/bin/Debug/net8.0/OllamaSharp.dll

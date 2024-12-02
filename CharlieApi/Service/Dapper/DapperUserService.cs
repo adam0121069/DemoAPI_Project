@@ -4,41 +4,23 @@ using Dapper;
 
 namespace CharlieApi.DapperService
 {
-    public class DapperUserService
+    public class DapperUserService : DapperBaseService
     {
-        private readonly string _connectionString;
+        public DapperUserService(string connectionString) : base(connectionString) { }
 
-        public DapperUserService(string connectionString)
+        public Task<IEnumerable<DapperUser>> GetUsersAsync()
         {
-            _connectionString = connectionString;
+            return QueryAsync<DapperUser>("SELECT * FROM Users");
         }
 
-        public async Task<IEnumerable<DapperUser>> GetUsersAsync()
+        public Task<DapperUser> GetUserByIdAsync(int id)
         {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-                IEnumerable<DapperUser> users = await connection.QueryAsync<DapperUser>("SELECT * FROM Users");
-                return users ?? Enumerable.Empty<DapperUser>();
-            }
+            return QuerySingleOrDefaultAsync<DapperUser>("SELECT * FROM Users WHERE SeqNo = @Id", new { Id = id });
         }
 
-        public async Task<DapperUser> GetUserByIdAsync(int id)
+        public Task<int> UpdateUserAsync(DapperUser user)
         {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-                DapperUser? user = await connection.QueryFirstOrDefaultAsync<DapperUser>("SELECT * FROM Users WHERE SeqNo = @Id", new { Id = id });
-                return user ?? new DapperUser();
-            }
-        }
-
-        public async Task<int> UpdateUserAsync(DapperUser user)
-        {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-                string sql = @"
+            string sql = @"
                 UPDATE Users
                 SET 
                     AccountNumber = @AccountNumber,
@@ -48,56 +30,44 @@ namespace CharlieApi.DapperService
                     Email = @Email
                 WHERE SeqNo = @SeqNo";
 
-                var result = await connection.ExecuteAsync(sql, new
-                {
-                    user.AccountNumber,
-                    user.PassWordStr,
-                    user.FirstName,
-                    user.LastName,
-                    user.Email,
-                    user.SeqNo
-                });
-
-                return result;
-            }
+            return ExecuteAsync(sql, new
+            {
+                user.AccountNumber,
+                user.PassWordStr,
+                user.FirstName,
+                user.LastName,
+                user.Email,
+                user.SeqNo
+            });
         }
 
-        public async Task<int> DeleteUserAsync(int id)
+        public Task<int> DeleteUserAsync(int id)
         {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-                string sql = "DELETE FROM Users WHERE SeqNo = @Id";
-
-                var result = await connection.ExecuteAsync(sql, new { Id = id });
-
-                return result; // 返回受影响的行数
-            }
+            string sql = "DELETE FROM Users WHERE SeqNo = @Id";
+            return ExecuteAsync(sql, new { Id = id });
         }
 
         public async Task<int> CreateUserAsync(DapperUser user)
         {
-            using (var connection = new SqlConnection(_connectionString))
+            string sql = @"
+                INSERT INTO Users (AccountNumber, PassWordStr, FirstName, LastName, Email, DateOfBirth)
+                VALUES (@AccountNumber, @PassWordStr, @FirstName, @LastName, @Email, @DateOfBirth);
+                SELECT CAST(SCOPE_IDENTITY() as int);";
+
+            // 将 `DateOnly` 转为 `DateTime`
+            var parameters = new
             {
-                await connection.OpenAsync();
-                string sql = @"
-                    INSERT INTO Users (AccountNumber, PassWordStr, FirstName, LastName, Email ,DateOfBirth)
-                    VALUES (@AccountNumber, @PassWordStr, @FirstName, @LastName, @Email, @DateOfBirth);
-                    SELECT CAST(SCOPE_IDENTITY() as int);";
+                user.AccountNumber,
+                user.PassWordStr,
+                user.FirstName,
+                user.LastName,
+                user.Email,
+                DateOfBirth = user.DateOfBirth.ToDateTime(TimeOnly.MinValue)
+            };
 
-                var result = await connection.QuerySingleAsync<int>(sql, new
-                {
-                    user.AccountNumber,
-                    user.PassWordStr,
-                    user.FirstName,
-                    user.LastName,
-                    user.Email,
-                    //Convert DateOnly to DateTime for Dapper
-                    DateOfBirth = user.DateOfBirth.ToDateTime(TimeOnly.MinValue)
-                });
-
-                return result;
-            }
+            return await ExecuteWithConnectionAsync(conn => conn.QuerySingleAsync<int>(sql, parameters));
         }
     }
 }
+
+

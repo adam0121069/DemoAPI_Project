@@ -26,5 +26,15 @@ namespace CharlieApi.Controllers
             var answer = await _qaService.GetAnswerAsync(request.Question);
             return Ok(new { question = request.Question, answer });
         }
+
+        [HttpPost("ollama_QA")]
+        public async Task<IActionResult> ollamaQuestion(string que)
+        {
+            QuestionAnswerService2 QuestionAnswerService = new QuestionAnswerService2();
+
+            var answer = await QuestionAnswerService.GetAnswerAsync(que);
+            return Ok(new { question = que, answer });
+        }
+
     }
 }
